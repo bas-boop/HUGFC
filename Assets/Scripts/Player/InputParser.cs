@@ -8,8 +8,10 @@ namespace Player
     {
         private const string MOVE_ACTION = "Move";
         private const string RUN_ACTION = "Run";
+        private const string JUMP_ACTION = "Jump";
 
         [SerializeField] private Movement movement;
+        [SerializeField] private Jump jump;
         
         private PlayerInput _playerInput;
         private InputActionAsset _playerControlsActions;
@@ -30,5 +32,21 @@ namespace Player
             else
                 movement.SetIdle();
         }
+
+        private void OnEnable() => AddListeners();
+
+        private void OnDisable() => RemoveListeners();
+
+        private void AddListeners()
+        {
+            _playerControlsActions[JUMP_ACTION].performed += Jump;
+        }
+
+        private void RemoveListeners()
+        {
+            _playerControlsActions[JUMP_ACTION].performed -= Jump;
+        }
+        
+        private void Jump(InputAction.CallbackContext context) => jump.ActivateJump();
     }
 }

@@ -42,7 +42,7 @@ namespace Player
         {
             _currentState = PlayerMoveState.IDLE;
             Vector3 newVelocity = _rigidbody.velocity;
-            newVelocity.Divide(deceleration,1,deceleration);
+            newVelocity.Divide(deceleration, 1, deceleration);
             _rigidbody.velocity = newVelocity;
         }
     }
