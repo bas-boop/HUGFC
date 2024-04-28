@@ -9,9 +9,11 @@ namespace Player
         private const string MOVE_ACTION = "Move";
         private const string RUN_ACTION = "Run";
         private const string JUMP_ACTION = "Jump";
+        private const string CAMERA_ACTION = "Camera";
 
         [SerializeField] private Movement movement;
         [SerializeField] private Jump jump;
+        [SerializeField] private Rotator rotator;
         
         private PlayerInput _playerInput;
         private InputActionAsset _playerControlsActions;
@@ -31,6 +33,9 @@ namespace Player
                 movement.Walk(moveInput, runInput);
             else
                 movement.SetIdle();
+            
+            Vector2 cameraInput = _playerControlsActions[CAMERA_ACTION].ReadValue<Vector2>();
+            rotator.Rotate(cameraInput);
         }
 
         private void OnEnable() => AddListeners();
