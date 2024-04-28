@@ -61,6 +61,8 @@ namespace Framework
         /// </summary>
         /// <returns>Return a number between 0-1</returns>
         public float GetCurrentTimerPercentage() => _currentTimer / startingTime;
+
+        public void Debugger(string message) => Debug.Log(message);
         
         private void Counting()
         {

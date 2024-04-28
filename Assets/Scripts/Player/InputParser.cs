@@ -17,6 +17,7 @@ namespace Player
         
         private PlayerInput _playerInput;
         private InputActionAsset _playerControlsActions;
+        private bool _isWalking;
 
         private void Awake()
         {
@@ -28,12 +29,21 @@ namespace Player
         {
             Vector2 moveInput = _playerControlsActions[MOVE_ACTION].ReadValue<Vector2>();
             float runInput = _playerControlsActions[RUN_ACTION].ReadValue<float>();
-            
-            if (moveInput != Vector2.zero)
-                movement.Walk(moveInput, runInput);
+
+            if (moveInput == Vector2.zero)
+            {
+                if (_isWalking)
+                {
+                    movement.SetIdle();
+                    _isWalking = false;
+                }
+            }
             else
-                movement.SetIdle();
-            
+            {
+                movement.Walk(moveInput, runInput);
+                _isWalking = true;
+            }
+
             Vector2 cameraInput = _playerControlsActions[CAMERA_ACTION].ReadValue<Vector2>();
             rotator.Rotate(cameraInput);
         }
