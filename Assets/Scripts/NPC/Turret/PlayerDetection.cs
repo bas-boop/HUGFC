@@ -19,7 +19,7 @@ namespace NPC.Turret
 
         private Timer _timer;
         private Shooter _shooter;
-        private GameObject _player;
+        private GameObject _target;
 
         private void Awake()
         {
@@ -29,32 +29,8 @@ namespace NPC.Turret
 
         private void Update()
         {
-            if (!_player)
-                return;
-            
-            turretHead.LookAt(_player.transform.position);
-
-            if (!Physics.Raycast(transform.position, _player.transform.position - transform.position,
-                    out var hit, maxDetectionRange, playerLayer))
-                    return;
-
-            Collider hitInfoCollider = hit.collider;
-
-            if (hitInfoCollider == null)
-            {
-                Debug.Log(":(");
-                return;
-            }
-            
-            if (hitInfoCollider.gameObject.name != PLAYER_TAG)
-            {
-                _timer.ResetTimer();
-                Debug.Log(hit.transform.name);
-                return;
-            }
-            
-            _timer.SetCanCount(true);
-            Debug.Log("yes");
+            if (_target)
+                DetectTarget();
         }
 
         private void OnTriggerEnter(Collider other)
@@ -62,17 +38,39 @@ namespace NPC.Turret
             if (!other.gameObject.HasTag(PLAYER_TAG))
                 return;
 
-            _player = other.gameObject;
-           _shooter.SetTarget(_player.GetComponent<Hitable>());
+            _target = other.gameObject;
+           _shooter.SetTarget(_target.GetComponent<Hitable>());
         }
 
         private void OnTriggerExit(Collider other)
         {
-            if (other.gameObject != _player)
+            if (other.gameObject != _target)
                 return;
             
-            _player = null;
+            _target = null;
             _shooter.SetTarget(null);
+        }
+
+        private void DetectTarget()
+        {
+            turretHead.LookAt(_target.transform.position);
+
+            if (!Physics.Raycast(transform.position, _target.transform.position - transform.position,
+                    out var hit, maxDetectionRange, playerLayer))
+                return;
+
+            Collider hitInfoCollider = hit.collider;
+
+            if (hitInfoCollider == null)
+                return;
+            
+            if (hitInfoCollider.gameObject.name != PLAYER_TAG)
+            {
+                _timer.ResetTimer();
+                return;
+            }
+
+            _timer.SetCanCount(true);
         }
     }
 }
